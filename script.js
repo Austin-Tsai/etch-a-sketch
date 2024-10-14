@@ -41,11 +41,11 @@ const paintBucket = (square) => {
 };
 
 const floodFill = (square, targetColor, replacementColor) => {
-  const stack = [square];
+  const queue = [square];
   const squares = document.querySelectorAll('.square');
 
-  while (stack.length > 0) {
-    const currentSquare = stack.pop();
+  while (queue.length > 0) {
+    const currentSquare = queue.shift();
 
     // If the current square's color is not the target color, skip it
     if (currentSquare.dataset.color !== targetColor) continue;
@@ -54,16 +54,16 @@ const floodFill = (square, targetColor, replacementColor) => {
     currentSquare.dataset.color = replacementColor;
     currentSquare.style.backgroundColor = replacementColor;
 
-    // Get the indices of the current square
+    // Get the index of the current square
     const index = Array.from(squares).indexOf(currentSquare);
     const row = Math.floor(index / numSquares);
     const col = index % numSquares;
 
     // Check neighboring squares (up, down, left, right)
-    if (row > 0) stack.push(squares[index - numSquares]); // Up
-    if (row < numSquares - 1) stack.push(squares[index + numSquares]); // Down
-    if (col > 0) stack.push(squares[index - 1]); // Left
-    if (col < numSquares - 1) stack.push(squares[index + 1]); // Right
+    if (row > 0) queue.push(squares[index - numSquares]); // Up
+    if (row < numSquares - 1) queue.push(squares[index + numSquares]); // Down
+    if (col > 0) queue.push(squares[index - 1]); // Left
+    if (col < numSquares - 1) queue.push(squares[index + 1]); // Right
   }
 };
 
@@ -249,7 +249,11 @@ let numSquares = 16;
 let color = "#000";
 createGrid();
 
+const undoButton = document.getElementById("undo");
+const redoButton = document.getElementById("redo");
 
+undoButton.addEventListener("click", () => undo());
+redoButton.addEventListener("click", () => redo());
 //undo and redo buttons
 let undoStack = [];
 let redoStack = [];
