@@ -34,8 +34,8 @@ const toggleGridLines = () => {
     gridLines = false;
   } else {
     document.querySelectorAll(".square").forEach((square) => {
-      square.style.borderRight = `solid #000 ${1/numSquares}px`;
-      square.style.borderBottom = `solid #000 ${1/numSquares}px`;
+      square.style.borderRight = `solid #000 ${1 / numSquares}px`;
+      square.style.borderBottom = `solid #000 ${1 / numSquares}px`;
     });
     gridLines = true;
   }
@@ -69,10 +69,14 @@ const createGrid = () => {
       square.classList.add("square");
 
       square.dataset.color = "transparent";
-      square.style.width = `${560/numSquares}px`;
-      square.style.height = `${560/numSquares}px`;
-      square.style.borderRightWidth = `${1/numSquares}px`;
-      square.style.borderBottomWidth = `${1/numSquares}px`;
+      square.style.width = `${560 / numSquares}px`;
+      square.style.height = `${560 / numSquares}px`;
+      if (gridLines) {
+        square.style.borderRightWidth = `${1 / numSquares}px`;
+        square.style.borderBottomWidth = `${1 / numSquares}px`;
+      } else {
+        square.style.border = "none";
+      }
       square.addEventListener("mouseenter", () => enter(square));
       square.addEventListener("mouseleave", () => leave(square));
 
