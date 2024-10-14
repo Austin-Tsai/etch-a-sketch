@@ -225,6 +225,12 @@ let isPaintBucketActive = false;
 paintBucketButton.addEventListener("click", () => {
   draw = true;
   isPaintBucketActive = true;
+  document
+    .querySelectorAll(".square")
+    .forEach(
+      (square) =>
+        (square.style.cursor = "url(./assets/bucket-cursor.png), auto")
+    );
 });
 
 const rainbowButton = document.getElementById("rainbow");
