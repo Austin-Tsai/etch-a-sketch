@@ -202,21 +202,21 @@ drawButton.addEventListener("click", () => {
   draw = true;
   rainbow = false;
   isPaintBucketActive = false;
-  // document
-  //   .querySelectorAll(".square")
-  //   .forEach((square) => (square.style.cursor = "pointer"));
+  document
+    .querySelectorAll(".square")
+    .forEach((square) => (square.style.cursor = "pointer"));
 });
 
 const eraserButton = document.getElementById("eraser");
 eraserButton.addEventListener("click", () => {
   draw = false;
   isPaintBucketActive = false;
-  // document
-  //   .querySelectorAll(".square")
-  //   .forEach(
-  //     (square) =>
-  //       (square.style.cursor = "url(./assets/eraser-cursor.png), auto")
-  //   );
+  document
+    .querySelectorAll(".square")
+    .forEach(
+      (square) =>
+        (square.style.cursor = "url(./assets/eraser-cursor.png), auto")
+    );
 });
 
 const paintBucketButton = document.getElementById("paint-bucket");
