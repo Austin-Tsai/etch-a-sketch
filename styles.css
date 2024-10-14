@@ -5,7 +5,6 @@ body {
 
 .container {
   display: flex;
-  /* height: 100vh; */
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -51,7 +50,7 @@ body {
   background-color: #2c72da;
   border-radius: 10px;
   border: solid #000 2px;
-  height: 460px;
+  height: 500px;
   width: 150px;
   display: flex;
   flex-direction: column;
@@ -105,6 +104,16 @@ body {
   background-color: #f4c55f;
 }
 
+#paint-bucket {
+  background-color: #4eafd3;
+  border: solid #2a59a5 2px;
+  font-size: 14px;
+}
+
+#paint-bucket:hover {
+  background-color: #78bfda;
+}
+
 #size-change {
   background-color: #c12ac3;
   border: solid #470883 2px;
@@ -152,14 +161,7 @@ body {
 }
 
 .outlined-white {
-    color: rgb(255, 255, 255);
-    text-shadow:
-      -1px -1px 0 #000,
-       0   -1px 0 #000,
-       1px -1px 0 #000,
-       1px  0   0 #000,
-       1px  1px 0 #000,
-       0    1px 0 #000,
-      -1px  1px 0 #000,
-      -1px  0   0 #000;
-  }
+  color: rgb(255, 255, 255);
+  text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000,
+    1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+}

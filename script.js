@@ -12,17 +12,58 @@ const leave = (square) => {
 };
 
 const changeColor = (square) => {
-  if (draw) {
-    if (rainbow) {
-      square.dataset.color = square.dataset.rainbow;
-      square.style.backgroundColor = square.dataset.color;
-    } else {
-      square.dataset.color = color;
-      square.style.backgroundColor = square.dataset.color;
-    }
+  if (isPaintBucketActive) {
+    // If paint bucket is active, fill the area
+    paintBucket();
   } else {
-    square.dataset.color = "transparent";
-    square.style.backgroundColor = "transparent";
+    if (draw) {
+      if (rainbow) {
+        square.dataset.color = square.dataset.rainbow;
+        square.style.backgroundColor = square.dataset.color;
+      } else {
+        square.dataset.color = color;
+        square.style.backgroundColor = square.dataset.color;
+      }
+    } else {
+      square.dataset.color = "transparent";
+      square.style.backgroundColor = "transparent";
+    }
+  }
+};
+
+const paintBucket = (square) => {
+  const targetColor = square.dataset.color; // Original color to replace
+  const replacementColor = color; // New color
+
+  if (targetColor !== replacementColor) { // Only fill if colors are different
+    floodFill(square, targetColor, replacementColor);
+  }
+};
+
+const floodFill = (square, targetColor, replacementColor) => {
+  const stack = [square];
+  const squares = document.querySelectorAll('.square');
+
+  while (stack.length > 0) {
+    const currentSquare = stack.pop();
+
+    // If the current square's color is not the target color, skip it
+    if (currentSquare.dataset.color !== targetColor) continue;
+
+    // Update the square's color
+    currentSquare.dataset.color = replacementColor;
+    currentSquare.style.backgroundColor = replacementColor;
+
+    // Get the indices of the current square
+    const index = Array.from(squares).indexOf(currentSquare);
+    const row = Math.floor(index / numSquares);
+    const col = index % numSquares;
+
+    // Check neighboring squares (up, down, left, right)
+    if (row > 0) stack.push(squares[index - numSquares]); // Up
+    if (row < numSquares - 1) stack.push(squares[index + numSquares]); // Down
+    if (col > 0) stack.push(squares[index - 1]); // Left
+    if (col < numSquares - 1) stack.push(squares[index + 1]); // Right
   }
 };
 
@@ -132,6 +173,18 @@ grid.addEventListener("mousedown", () => {
     changeColor(square);
   }
 });
+
+grid.addEventListener("click", (event) => {
+  const square = event.target.closest(".square");
+  if (square) {
+    if (isPaintBucketActive) {
+      paintBucket(square);
+    } else {
+      changeColor(square); // Regular color change logic
+    }
+  }
+});
+
 grid.addEventListener("mouseup", () => {
   isMouseDown = false;
 });
@@ -148,6 +201,7 @@ const drawButton = document.getElementById("draw");
 drawButton.addEventListener("click", () => {
   draw = true;
   rainbow = false;
+  isPaintBucketActive = false;
   // document
   //   .querySelectorAll(".square")
   //   .forEach((square) => (square.style.cursor = "pointer"));
@@ -156,6 +210,7 @@ drawButton.addEventListener("click", () => {
 const eraserButton = document.getElementById("eraser");
 eraserButton.addEventListener("click", () => {
   draw = false;
+  isPaintBucketActive = false;
   // document
   //   .querySelectorAll(".square")
   //   .forEach(
@@ -164,11 +219,20 @@ eraserButton.addEventListener("click", () => {
   //   );
 });
 
+const paintBucketButton = document.getElementById("paint-bucket");
+let isPaintBucketActive = false;
+
+paintBucketButton.addEventListener("click", () => {
+  draw = true;
+  isPaintBucketActive = true;
+});
+
 const rainbowButton = document.getElementById("rainbow");
 let rainbow = false;
 rainbowButton.addEventListener("click", () => {
   draw = true;
   rainbow = true;
+  isPaintBucketActive = false;
 });
 
 const gridButton = document.getElementById("grid-lines");
@@ -186,13 +250,16 @@ let color = "#000";
 createGrid();
 
 
+//undo and redo buttons
 let undoStack = [];
 let redoStack = [];
 
 const undo = () => {
   if (undoStack.length > 0) {
     const lastState = undoStack.pop();
-    const currentState = Array.from(document.querySelectorAll(".square")).map(square => square.dataset.color);
+    const currentState = Array.from(document.querySelectorAll(".square")).map(
+      (square) => square.dataset.color
+    );
     redoStack.push(currentState);
     applyState(lastState);
   }
@@ -201,14 +268,18 @@ const undo = () => {
 const redo = () => {
   if (redoStack.length > 0) {
     const nextState = redoStack.pop();
-    const currentState = Array.from(document.querySelectorAll(".square")).map(square => square.dataset.color);
+    const currentState = Array.from(document.querySelectorAll(".square")).map(
+      (square) => square.dataset.color
+    );
     undoStack.push(currentState);
     applyState(nextState);
   }
 };
 
 const captureState = () => {
-  const currentState = Array.from(document.querySelectorAll(".square")).map(square => square.dataset.color);
+  const currentState = Array.from(document.querySelectorAll(".square")).map(
+    (square) => square.dataset.color
+  );
   undoStack.push(currentState);
   redoStack = []; // Clear redo stack on new action
 };
@@ -222,9 +293,11 @@ const applyState = (state) => {
 };
 
 document.addEventListener("keydown", (event) => {
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === 'z';
-  const isRedo = (isMac ? event.metaKey : event.ctrlKey) && (event.key === 'y' || (event.key === 'Z' && event.shiftKey)); // Shift + Z for redo
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z";
+  const isRedo =
+    (isMac ? event.metaKey : event.ctrlKey) &&
+    (event.key === "y" || (event.key === "Z" && event.shiftKey)); // Shift + Z for redo
 
   if (isUndo) {
     event.preventDefault(); // Prevent default behavior
@@ -234,9 +307,6 @@ document.addEventListener("keydown", (event) => {
     redo();
   }
 });
-
-
-
 
 const downloadButton = document.getElementById("download");
 
