@@ -27,7 +27,7 @@ body {
   border-right: solid #1b1a1a 1px;
   box-sizing: border-box;
   background-color: transparent;
-  cursor: pointer;
+  cursor: url(./assets/paint-cursor.png), auto
 }
 
 #title {
