@@ -136,7 +136,7 @@ body {
 
 #rainbow {
   background: linear-gradient(in hsl longer hue 90deg, red 0 0);
-  border: solid #ffffff 2px;
+  border: solid #c3920e 2px;
   font-size: 14px;
 }
 

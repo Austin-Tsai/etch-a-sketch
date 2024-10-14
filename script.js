@@ -11,7 +11,7 @@ const leave = (square) => {
   square.style.backgroundColor = square.dataset.color;
 };
 
-const changeColor = (square) => {
+const changeColor = (square, checkShift = false) => {
   if (isPaintBucketActive) {
     // If paint bucket is active, fill the area
     paintBucket();
@@ -25,16 +25,17 @@ const changeColor = (square) => {
         square.style.backgroundColor = square.dataset.color;
       }
     } else {
-      square.dataset.color = "transparent";
-      square.style.backgroundColor = "transparent";
+      if (checkShift) paintBucket(square, "transparent");
+      else {
+        square.dataset.color = "transparent";
+        square.style.backgroundColor = "transparent";
+      }
     }
   }
 };
 
-const paintBucket = (square) => {
-  const targetColor = square.dataset.color; // Original color to replace
-  const replacementColor = color; // New color
-
+const paintBucket = (square, replacementColor = color) => {
+  const targetColor = square.dataset.color // original color
   if (targetColor !== replacementColor) {
     // Only fill if colors are different
     floodFill(square, targetColor, replacementColor);
@@ -146,12 +147,10 @@ const createGrid = () => {
 
       square.addEventListener("mouseover", () => {
         if (isMouseDown) {
-          changeColor(square);
+          if (event.shiftKey) changeColor(square, true);
+          else changeColor(square);
         }
       });
-
-      square.addEventListener("click", () => changeColor(square));
-
       row.appendChild(square);
     }
     grid.appendChild(row);
@@ -171,7 +170,8 @@ grid.addEventListener("mousedown", () => {
   const square = event.target.closest(".square");
   if (square) {
     captureState();
-    changeColor(square);
+    if (event.shiftKey) changeColor(square, true);
+    else changeColor(square);
   }
 });
 
@@ -180,6 +180,8 @@ grid.addEventListener("click", (event) => {
   if (square) {
     if (isPaintBucketActive) {
       paintBucket(square);
+    } else if (event.shiftKey && !draw) {
+      paintBucket(square, "transparent");
     } else {
       changeColor(square); // Regular color change logic
     }
