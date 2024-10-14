@@ -1,33 +1,54 @@
 const enter = (square) => {
   if (draw) {
-    square.style.backgroundColor = `${color}`;
+    if (rainbow) {
+      square.dataset.rainbow = getRandomRainbowColor();
+      square.style.backgroundColor = square.dataset.rainbow;
+    } else square.style.backgroundColor = color;
   } else square.style.backgroundColor = "transparent";
 };
 
 const leave = (square) => {
-  square.style.backgroundColor = `${square.dataset.color}`;
+  square.style.backgroundColor = square.dataset.color;
 };
 
 const changeColor = (square) => {
   if (draw) {
-    square.dataset.color = color;
-    square.style.backgroundColor = `${color}`;
+    if (rainbow) {
+      square.dataset.color = square.dataset.rainbow;
+      square.style.backgroundColor = square.dataset.color;
+    } else {
+      square.dataset.color = color;
+      square.style.backgroundColor = square.dataset.color;
+    }
   } else {
     square.dataset.color = "transparent";
     square.style.backgroundColor = "transparent";
   }
 };
 
+const getRandomRainbowColor = () => {
+  const rainbowColors = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "indigo",
+    "violet",
+  ];
+  const randomIndex = Math.floor(Math.random() * rainbowColors.length);
+  return rainbowColors[randomIndex];
+};
+
 const resetColors = () => {
   document.querySelectorAll(".square").forEach((square) => {
-    square.dataset.color = "#cbcbcb"; // Clear the dataset color
+    square.dataset.color = "transparent"; // Clear the dataset color
     square.style.backgroundColor = "transparent"; // Reset the background color
   });
 };
 
 const toggleGridLines = () => {
   if (gridLines) {
-    console.log("here");
     document.querySelectorAll(".square").forEach((square) => {
       square.style.border = "none";
     });
@@ -69,6 +90,7 @@ const createGrid = () => {
       square.classList.add("square");
 
       square.dataset.color = "transparent";
+      square.dataset.rainbow = getRandomRainbowColor();
       square.style.width = `${560 / numSquares}px`;
       square.style.height = `${560 / numSquares}px`;
       if (gridLines) {
@@ -124,10 +146,28 @@ let draw = true;
 const drawButton = document.getElementById("draw");
 drawButton.addEventListener("click", () => {
   draw = true;
+  rainbow = false;
+  // document
+  //   .querySelectorAll(".square")
+  //   .forEach((square) => (square.style.cursor = "pointer"));
 });
+
 const eraserButton = document.getElementById("eraser");
 eraserButton.addEventListener("click", () => {
   draw = false;
+  // document
+  //   .querySelectorAll(".square")
+  //   .forEach(
+  //     (square) =>
+  //       (square.style.cursor = "url(./assets/eraser-cursor.png), auto")
+  //   );
+});
+
+const rainbowButton = document.getElementById("rainbow");
+let rainbow = false;
+rainbowButton.addEventListener("click", () => {
+  draw = true;
+  rainbow = true;
 });
 
 const gridButton = document.getElementById("grid-lines");
