@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Etch-A-Sketch</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   </head>
   <body>
     <div class="container">
       <h1 id="title">Etch-A-Sketch</h1>
       <div class="body">
         <div class="sidebar">
-            <button id="clear">Clear</button>
+            <input id="color-picker" class="clickable" type="color" />
+            <button id="draw" class="clickable">Draw</button>
+            <button id="eraser" class="clickable">Eraser</button>
+            <button id="grid-lines" class="clickable">Toggle Grid Lines</button>
+            <button id="clear" class="clickable">Clear</button>
+            <button id="size-change" class="clickable">Change Grid Size</button>
+            <button id="download" class="clickable">Download Image</button>
         </div>
         <div id="grid"></div>
       </div>
