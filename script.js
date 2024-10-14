@@ -128,6 +128,7 @@ grid.addEventListener("mousedown", () => {
   isMouseDown = true;
   const square = event.target.closest(".square");
   if (square) {
+    captureState();
     changeColor(square);
   }
 });
@@ -183,6 +184,60 @@ let numSquares = 16;
 
 let color = "#000";
 createGrid();
+
+
+let undoStack = [];
+let redoStack = [];
+
+const undo = () => {
+  if (undoStack.length > 0) {
+    const lastState = undoStack.pop();
+    const currentState = Array.from(document.querySelectorAll(".square")).map(square => square.dataset.color);
+    redoStack.push(currentState);
+    applyState(lastState);
+  }
+};
+
+const redo = () => {
+  if (redoStack.length > 0) {
+    const nextState = redoStack.pop();
+    const currentState = Array.from(document.querySelectorAll(".square")).map(square => square.dataset.color);
+    undoStack.push(currentState);
+    applyState(nextState);
+  }
+};
+
+const captureState = () => {
+  const currentState = Array.from(document.querySelectorAll(".square")).map(square => square.dataset.color);
+  undoStack.push(currentState);
+  redoStack = []; // Clear redo stack on new action
+};
+
+// Function to apply a state to the grid
+const applyState = (state) => {
+  document.querySelectorAll(".square").forEach((square, index) => {
+    square.dataset.color = state[index];
+    square.style.backgroundColor = state[index];
+  });
+};
+
+document.addEventListener("keydown", (event) => {
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === 'z';
+  const isRedo = (isMac ? event.metaKey : event.ctrlKey) && (event.key === 'y' || (event.key === 'Z' && event.shiftKey)); // Shift + Z for redo
+
+  if (isUndo) {
+    event.preventDefault(); // Prevent default behavior
+    undo();
+  } else if (isRedo) {
+    event.preventDefault(); // Prevent default behavior
+    redo();
+  }
+});
+
+
+
+
 const downloadButton = document.getElementById("download");
 
 downloadButton.addEventListener("click", () => {
