@@ -35,14 +35,15 @@ const paintBucket = (square) => {
   const targetColor = square.dataset.color; // Original color to replace
   const replacementColor = color; // New color
 
-  if (targetColor !== replacementColor) { // Only fill if colors are different
+  if (targetColor !== replacementColor) {
+    // Only fill if colors are different
     floodFill(square, targetColor, replacementColor);
   }
 };
 
 const floodFill = (square, targetColor, replacementColor) => {
   const queue = [square];
-  const squares = document.querySelectorAll('.square');
+  const squares = document.querySelectorAll(".square");
 
   while (queue.length > 0) {
     const currentSquare = queue.shift();
@@ -204,7 +205,9 @@ drawButton.addEventListener("click", () => {
   isPaintBucketActive = false;
   document
     .querySelectorAll(".square")
-    .forEach((square) => (square.style.cursor = "pointer"));
+    .forEach(
+      (square) => (square.style.cursor = "url(./assets/paint-cursor.png), auto")
+    );
 });
 
 const eraserButton = document.getElementById("eraser");
