@@ -225,6 +225,7 @@ let isPaintBucketActive = false;
 paintBucketButton.addEventListener("click", () => {
   draw = true;
   isPaintBucketActive = true;
+  rainbow = false;
   document
     .querySelectorAll(".square")
     .forEach(
@@ -239,6 +240,12 @@ rainbowButton.addEventListener("click", () => {
   draw = true;
   rainbow = true;
   isPaintBucketActive = false;
+  document
+    .querySelectorAll(".square")
+    .forEach(
+      (square) =>
+        (square.style.cursor = "url(./assets/rainbow-cursor.png), auto")
+    );
 });
 
 const gridButton = document.getElementById("grid-lines");
