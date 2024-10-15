@@ -126,7 +126,7 @@ const changeSize = () => {
   let result;
   do {
     result = +prompt(
-      "Choose the number of squares in the grid per row/column 1-100 (0 exits)"
+      "Choose the number of squares in the grid per row/column: 1-100 (0 exits)"
     );
   } while (
     Number.isNaN(result) ||
@@ -145,13 +145,13 @@ const downloadSize = () => {
   let result;
   do {
     result = +prompt(
-      "Choose the number of pixels each square in the grid has for the downloaded image 1-100 (0 exits, 1 is default)"
+      "Choose the number of pixels each square in the grid takes up in downloaded image: 1-128 (0 exits, 1 is default)"
     );
   } while (
     Number.isNaN(result) ||
     !Number.isInteger(result) ||
     result < 0 ||
-    result > 100
+    result > 128
   );
   if (result !== 0) {
     squarePixels = result;
