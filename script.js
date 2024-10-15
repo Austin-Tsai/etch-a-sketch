@@ -148,8 +148,8 @@ const createGrid = () => {
 
       square.dataset.color = "transparent";
       square.dataset.rainbow = getRandomRainbowColor();
-      square.style.width = `${560 / numSquares}px`;
-      square.style.height = `${560 / numSquares}px`;
+      square.style.width = `${640 / numSquares}px`;
+      square.style.height = `${640 / numSquares}px`;
       if (gridLines) {
         square.style.borderRightWidth = `${1 / numSquares}px`;
         square.style.borderBottomWidth = `${1 / numSquares}px`;
@@ -350,7 +350,7 @@ downloadButton.addEventListener("click", () => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  const squareSize = 560 / numSquares; // Ensure this matches your CSS square size
+  const squareSize = 640 / numSquares; // Ensure this matches your CSS square size
   canvas.width = squareSize * numSquares; // Set width based on number of squares
   canvas.height = squareSize * numSquares; // Set height based on number of squares
 
