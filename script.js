@@ -184,7 +184,7 @@ const createGrid = () => {
       });
 
       square.addEventListener("mouseover", () => {
-        if (isMouseDown) {
+        if (isMouseDown && !isPaintBucketActive) {
           if (event.shiftKey) changeColor(square, true);
           else changeColor(square);
         }
