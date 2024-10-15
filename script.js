@@ -18,7 +18,7 @@ const leave = (square) => {
 const changeColor = (square, checkShift = false) => {
   if (isPaintBucketActive) {
     // If paint bucket is active, fill the area
-    paintBucket();
+    paintBucket(square);
   } else {
     if (draw) {
       if (rainbow && checkShift) paintBucket(square, "rainbow");
@@ -185,7 +185,7 @@ const createGrid = () => {
       });
 
       square.addEventListener("mouseover", () => {
-        if (isMouseDown && !isPaintBucketActive) {
+        if (isMouseDown) {
           if (event.shiftKey) changeColor(square, true);
           else changeColor(square);
         }
