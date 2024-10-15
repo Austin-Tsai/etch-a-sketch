@@ -64,8 +64,7 @@ const floodFill = (square, targetColor, replacementColor) => {
       const random = getRandomRainbowColor();
       currentSquare.dataset.color = random;
       currentSquare.style.backgroundColor = random;
-    }
-    else {
+    } else {
       currentSquare.dataset.color = replacementColor;
       currentSquare.style.backgroundColor = replacementColor;
     }
@@ -135,6 +134,23 @@ const changeSize = () => {
     numSquares = result;
     grid.innerHTML = "";
     createGrid();
+  }
+};
+
+const downloadSize = () => {
+  let result;
+  do {
+    result = +prompt(
+      "Choose the number of pixels each square in the grid has for the downloaded image 1-100 (0 exits, 1 is default)"
+    );
+  } while (
+    Number.isNaN(result) ||
+    !Number.isInteger(result) ||
+    result < 0 ||
+    result > 100
+  );
+  if (result !== 0) {
+    squarePixels = result;
   }
 };
 
@@ -212,56 +228,25 @@ let draw = true;
 
 const drawButton = document.getElementById("draw");
 drawButton.addEventListener("click", () => {
-  draw = true;
-  rainbow = false;
-  isPaintBucketActive = false;
-  document
-    .querySelectorAll(".square")
-    .forEach(
-      (square) =>
-        (square.style.cursor = "url(./assets/fixed-paint-cursor.cur), auto")
-    );
+  changeMode("draw");
 });
 
 const eraserButton = document.getElementById("eraser");
 eraserButton.addEventListener("click", () => {
-  draw = false;
-  isPaintBucketActive = false;
-  document
-    .querySelectorAll(".square")
-    .forEach(
-      (square) =>
-        (square.style.cursor = "url(./assets/eraser-cursor.png), auto")
-    );
+  changeMode("eraser");
 });
 
 const paintBucketButton = document.getElementById("paint-bucket");
 let isPaintBucketActive = false;
 
 paintBucketButton.addEventListener("click", () => {
-  draw = true;
-  isPaintBucketActive = true;
-  rainbow = false;
-  document
-    .querySelectorAll(".square")
-    .forEach(
-      (square) =>
-        (square.style.cursor = "url(./assets/bucket-cursor.png), auto")
-    );
+  changeMode("bucket");
 });
 
 const rainbowButton = document.getElementById("rainbow");
 let rainbow = false;
 rainbowButton.addEventListener("click", () => {
-  draw = true;
-  rainbow = true;
-  isPaintBucketActive = false;
-  document
-    .querySelectorAll(".square")
-    .forEach(
-      (square) =>
-        (square.style.cursor = "url(./assets/rainbow-cursor.png), auto")
-    );
+  changeMode("rainbow");
 });
 
 const gridButton = document.getElementById("grid-lines");
@@ -344,6 +329,10 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+const downloadChangeButton = document.getElementById("download-change");
+downloadChangeButton.addEventListener("click", downloadSize);
+let squarePixels = 1;
+
 const downloadButton = document.getElementById("download");
 
 downloadButton.addEventListener("click", () => {
@@ -382,3 +371,31 @@ downloadButton.addEventListener("click", () => {
     }
   }, "image/png");
 });
+
+const changeMode = (mode) => {
+  let cursor = "";
+  draw = true;
+  rainbow = false;
+  isPaintBucketActive = false;
+  switch (mode) {
+    case "draw":
+      cursor = "fixed-paint-cursor.cur";
+      break;
+    case "eraser":
+      draw = false;
+      cursor = "eraser-cursor.png";
+      break;
+    case "bucket":
+      isPaintBucketActive = true;
+      cursor = "bucket-cursor.png";
+      break;
+    case "rainbow":
+      rainbow = true;
+      isPaintBucketActive = false;
+      cursor = "rainbow-cursor.png";
+      break;
+  }
+  document
+    .querySelectorAll(".square")
+    .forEach((square) => (square.style.cursor = `url(./assets/${cursor}), auto`));
+};
