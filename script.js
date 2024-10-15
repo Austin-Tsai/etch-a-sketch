@@ -17,7 +17,8 @@ const changeColor = (square, checkShift = false) => {
     paintBucket();
   } else {
     if (draw) {
-      if (rainbow) {
+      if (rainbow && checkShift) paintBucket(square, "rainbow");
+      else if (rainbow) {
         square.dataset.color = square.dataset.rainbow;
         square.style.backgroundColor = square.dataset.color;
       } else {
@@ -36,7 +37,9 @@ const changeColor = (square, checkShift = false) => {
 
 const paintBucket = (square, replacementColor = color) => {
   const targetColor = square.dataset.color; // original color
-  if (targetColor !== replacementColor) {
+  if (replacementColor === "rainbow") {
+    floodFill(square, targetColor, "rainbow");
+  } else if (targetColor !== replacementColor) {
     // Only fill if colors are different
     floodFill(square, targetColor, replacementColor);
   }
@@ -45,16 +48,27 @@ const paintBucket = (square, replacementColor = color) => {
 const floodFill = (square, targetColor, replacementColor) => {
   const queue = [square];
   const squares = document.querySelectorAll(".square");
+  let first = true;
 
   while (queue.length > 0) {
     const currentSquare = queue.shift();
-
     // If the current square's color is not the target color, skip it
     if (currentSquare.dataset.color !== targetColor) continue;
-
+    if (first && replacementColor === "rainbow") {
+      first = false;
+      currentSquare.dataset.color = currentSquare.dataset.rainbow;
+      currentSquare.style.backgroundColor = currentSquare.dataset.rainbow;
+    }
     // Update the square's color
-    currentSquare.dataset.color = replacementColor;
-    currentSquare.style.backgroundColor = replacementColor;
+    else if (replacementColor === "rainbow") {
+      const random = getRandomRainbowColor();
+      currentSquare.dataset.color = random;
+      currentSquare.style.backgroundColor = random;
+    }
+    else {
+      currentSquare.dataset.color = replacementColor;
+      currentSquare.style.backgroundColor = replacementColor;
+    }
 
     // Get the index of the current square
     const index = Array.from(squares).indexOf(currentSquare);
@@ -168,11 +182,7 @@ grid.addEventListener("mousedown", () => {
   event.preventDefault();
   isMouseDown = true;
   const square = event.target.closest(".square");
-  if (square) {
-    captureState();
-    if (event.shiftKey) changeColor(square, true);
-    else changeColor(square);
-  }
+  if (square) captureState();
 });
 
 grid.addEventListener("click", (event) => {
@@ -182,9 +192,9 @@ grid.addEventListener("click", (event) => {
       paintBucket(square);
     } else if (event.shiftKey && !draw) {
       paintBucket(square, "transparent");
-    } else {
-      changeColor(square); // Regular color change logic
-    }
+    } else if (event.shiftKey && rainbow) {
+      paintBucket(square, "rainbow");
+    } else changeColor(square); // Regular color change logic
   }
 });
 
@@ -208,7 +218,8 @@ drawButton.addEventListener("click", () => {
   document
     .querySelectorAll(".square")
     .forEach(
-      (square) => (square.style.cursor = "url(./assets/paint-cursor.png), auto")
+      (square) =>
+        (square.style.cursor = "url(./assets/fixed-paint-cursor.cur), auto")
     );
 });
 
