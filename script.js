@@ -35,7 +35,7 @@ const changeColor = (square, checkShift = false) => {
 };
 
 const paintBucket = (square, replacementColor = color) => {
-  const targetColor = square.dataset.color // original color
+  const targetColor = square.dataset.color; // original color
   if (targetColor !== replacementColor) {
     // Only fill if colors are different
     floodFill(square, targetColor, replacementColor);
@@ -258,7 +258,10 @@ let gridLines = true;
 gridButton.addEventListener("click", toggleGridLines);
 
 const clearButton = document.getElementById("clear");
-clearButton.addEventListener("click", resetColors);
+clearButton.addEventListener("click", () => {
+  captureState();
+  resetColors();
+});
 
 const sizeChange = document.getElementById("size-change");
 sizeChange.addEventListener("click", changeSize);
