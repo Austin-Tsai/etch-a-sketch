@@ -138,6 +138,7 @@ const changeSize = () => {
     numSquares = result;
     grid.innerHTML = "";
     createGrid();
+    changeMode("draw");
   }
 };
 
@@ -445,3 +446,4 @@ const changeMode = (mode) => {
       (square) => (square.style.cursor = `url(./assets/${cursor}), auto`)
     );
 };
+
