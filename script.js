@@ -382,15 +382,16 @@ downloadButton.addEventListener("click", () => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  const squareSize = 640 / numSquares; // Ensure this matches your CSS square size
+  // Set squareSize based on squarePixels
+  const squareSize = squarePixels; // Each square will be squarePixels wide and high
   canvas.width = squareSize * numSquares; // Set width based on number of squares
   canvas.height = squareSize * numSquares; // Set height based on number of squares
 
-  // Flip the canvas horizontally
+  // Flip the canvas horizontally (if needed)
   ctx.scale(-1, 1); // Flip horizontally
   ctx.translate(-canvas.width, 0); // Translate back to the original position
 
-  // Rotate the canvas 90 degrees
+  // Rotate the canvas 90 degrees (if needed)
   ctx.translate(canvas.width / 2, canvas.height / 2); // Move to center
   ctx.rotate(Math.PI / 2); // Rotate 90 degrees
   ctx.translate(-canvas.height / 2, -canvas.width / 2); // Move back to the top left
