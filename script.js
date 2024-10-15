@@ -1,4 +1,5 @@
 const enter = (square) => {
+  activeSquare = square;
   if (draw) {
     if (rainbow) {
       square.dataset.rainbow = getRandomRainbowColor();
@@ -8,6 +9,9 @@ const enter = (square) => {
 };
 
 const leave = (square) => {
+  if (square === activeSquare) {
+    activeSquare = null; // Clear active square if the mouse leaves
+  }
   square.style.backgroundColor = square.dataset.color;
 };
 
@@ -172,8 +176,12 @@ const createGrid = () => {
       } else {
         square.style.border = "none";
       }
-      square.addEventListener("mouseenter", () => enter(square));
-      square.addEventListener("mouseleave", () => leave(square));
+      square.addEventListener("mouseenter", () => {
+        enter(square);
+      });
+      square.addEventListener("mouseleave", () => {
+        leave(square);
+      });
 
       square.addEventListener("mouseover", () => {
         if (isMouseDown) {
@@ -223,8 +231,8 @@ grid.addEventListener("mouseenter", () => {
 body.addEventListener("mouseup", () => {
   isMouseDown = false;
 });
-
 let draw = true;
+let activeSquare = null;
 
 const drawButton = document.getElementById("draw");
 drawButton.addEventListener("click", () => {
@@ -326,6 +334,41 @@ document.addEventListener("keydown", (event) => {
   } else if (isRedo) {
     event.preventDefault(); // Prevent default behavior
     redo();
+  } else {
+    let key = Number(event.key);
+    if (!(isNaN(key) || event.key === null || event.key === " ")) {
+      if (key > 0 && key < 5) {
+        let button;
+        let color;
+        if (key === 1) {
+          button = drawButton;
+          color = "#f4c55f";
+          changeMode("draw");
+        } else if (key === 2) {
+          button = paintBucketButton;
+          color = "#78bfda";
+          changeMode("bucket");
+        } else if (key === 3) {
+          button = eraserButton;
+          color = "#f6abde";
+          changeMode("eraser");
+        } else if (key === 4) {
+          button = rainbowButton;
+          changeMode("rainbow");
+        }
+        if (activeSquare) enter(activeSquare);
+        button.classList.add("hover");
+        button.style.backgroundColor = color;
+        setTimeout(() => {
+          button.classList.add("active");
+        }, 150);
+        setTimeout(() => {
+          button.style.backgroundColor = null;
+          button.classList.remove("hover");
+          button.classList.remove("active");
+        }, 150);
+      }
+    }
   }
 });
 
@@ -397,5 +440,7 @@ const changeMode = (mode) => {
   }
   document
     .querySelectorAll(".square")
-    .forEach((square) => (square.style.cursor = `url(./assets/${cursor}), auto`));
+    .forEach(
+      (square) => (square.style.cursor = `url(./assets/${cursor}), auto`)
+    );
 };
