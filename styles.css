@@ -25,7 +25,7 @@ body {
   border-right: solid #1b1a1a 1px;
   box-sizing: border-box;
   background-color: transparent;
-  cursor: url(./assets/fixed-paint-cursor.cur), auto
+  cursor: url(./assets/fixed-paint-cursor.cur), auto;
 }
 
 #title {
@@ -155,27 +155,26 @@ body {
 }
 
 #controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100px;
-    gap: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  gap: 5px;
 }
 
-#undo, #redo {
-    background-color: #a9a8a8;
-    border: solid #6c6b6b 2px;
+#undo,
+#redo {
+  background-color: #bbbbbb;
+  border: solid #6c6b6b 2px;
 }
 
-#undo:hover, #redo:hover {
-    background-color: #d9d9d9;
-}
-
-.clickable:hover, .hover{
+.clickable:hover,
+.hover {
   transform: scale(1.03);
 }
 
-.clickable:active, .active{
+.clickable:active,
+.active {
   transform: scale(0.98);
 }
 
