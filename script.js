@@ -207,12 +207,15 @@ grid.addEventListener("mousedown", () => {
   event.preventDefault();
   isMouseDown = true;
   const square = event.target.closest(".square");
-  if (square) captureState();
+  if (square) {
+    captureState();
+    changeColor(square);
+  }
 });
 
 grid.addEventListener("click", (event) => {
   const square = event.target.closest(".square");
-  if (square) {
+  if (square && !isMouseDown) {
     if (isPaintBucketActive) {
       paintBucket(square);
     } else if (event.shiftKey && !draw) {
@@ -284,20 +287,32 @@ redoButton.addEventListener("click", () => redo());
 let undoStack = [];
 let redoStack = [];
 
-undoButton.setAttribute("style", "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;")
-redoButton.setAttribute("style", "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;")
-    
-    
+undoButton.setAttribute(
+  "style",
+  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+);
+redoButton.setAttribute(
+  "style",
+  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+);
+
 const undo = () => {
   if (undoStack.length > 0) {
     const lastState = undoStack.pop();
     const currentState = Array.from(document.querySelectorAll(".square")).map(
       (square) => square.dataset.color
     );
-    redoButton.setAttribute("style", "color: none; background-color: none; border-color: none;");
+    redoButton.setAttribute(
+      "style",
+      "color: none; background-color: none; border-color: none;"
+    );
     redoStack.push(currentState);
     applyState(lastState);
-    if (undoStack.length == 0) undoButton.setAttribute("style", "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;");
+    if (undoStack.length == 0)
+      undoButton.setAttribute(
+        "style",
+        "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+      );
   }
 };
 
@@ -307,10 +322,17 @@ const redo = () => {
     const currentState = Array.from(document.querySelectorAll(".square")).map(
       (square) => square.dataset.color
     );
-    undoButton.setAttribute("style", "color: none; background-color: none; border-color: none;");
+    undoButton.setAttribute(
+      "style",
+      "color: none; background-color: none; border-color: none;"
+    );
     undoStack.push(currentState);
     applyState(nextState);
-    if (redoStack.length == 0) redoButton.setAttribute("style", "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;");
+    if (redoStack.length == 0)
+      redoButton.setAttribute(
+        "style",
+        "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+      );
   }
 };
 
@@ -319,8 +341,14 @@ const captureState = () => {
     (square) => square.dataset.color
   );
   undoStack.push(currentState);
-  undoButton.setAttribute("style", "color: none; background-color: none; border-color: none;");
-  redoButton.setAttribute("style", "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;")
+  undoButton.setAttribute(
+    "style",
+    "color: none; background-color: none; border-color: none;"
+  );
+  redoButton.setAttribute(
+    "style",
+    "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+  );
   redoStack = []; // Clear redo stack on new action
 };
 
@@ -438,16 +466,16 @@ const changeMode = (mode) => {
       break;
     case "eraser":
       draw = false;
-      cursor = "eraser-cursor.png";
+      cursor = "fixed-eraser-cursor.cur";
       break;
     case "bucket":
       isPaintBucketActive = true;
-      cursor = "bucket-cursor.png";
+      cursor = "fixed-bucket-cursor.cur";
       break;
     case "rainbow":
       rainbow = true;
       isPaintBucketActive = false;
-      cursor = "rainbow-cursor.png";
+      cursor = "fixed-rainbow-cursor.cur";
       break;
   }
   document
@@ -456,4 +484,3 @@ const changeMode = (mode) => {
       (square) => (square.style.cursor = `url(./assets/${cursor}), auto`)
     );
 };
-
