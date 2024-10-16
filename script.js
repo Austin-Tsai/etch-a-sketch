@@ -74,6 +74,7 @@ const leave = (square) => {
 
 // change color of the selected square according to the drawing mode
 const changeColor = (square, checkShift = false) => {
+  console.log("test");
   // If paint bucket is active, color fill the area
   if (isPaintBucketActive) {
     paintBucket(square);
@@ -396,22 +397,22 @@ const keyPress = (event) => {
     // shortcuts to change drawing mode
     let key = Number(event.key);
     if (!(isNaN(key) || event.key === null || event.key === " ")) {
-      if (key >= 1 && key <= 4) {
+      if (key >= 2 && key <= 5) {
         let button; // indicate the corresponding button for each shortcut
         let color; // used to replicate the effect of a button being pressed
-        if (key === 1) {
+        if (key === 2) {
           button = drawButton;
           color = "#f4c55f";
           changeMode("draw");
-        } else if (key === 2) {
+        } else if (key === 3) {
           button = eraserButton;
           color = "#f6abde";
           changeMode("eraser");
-        } else if (key === 3) {
+        } else if (key === 4) {
           button = paintBucketButton;
           color = "#78bfda";
           changeMode("bucket");
-        } else if (key === 4) {
+        } else if (key === 5) {
           button = rainbowButton;
           changeMode("rainbow");
         }
@@ -429,6 +430,10 @@ const keyPress = (event) => {
           button.classList.remove("hover");
           button.classList.remove("active");
         }, 150);
+      }
+      else if (key === 1) // active color picker
+      {
+        colorPicker.click();
       }
     }
   }
@@ -463,7 +468,7 @@ const changeMode = (mode) => {
     );
 };
 
-// event listeners 
+// event listeners
 // grid/body
 grid.addEventListener("mousedown", () => {
   event.preventDefault();
@@ -477,15 +482,15 @@ grid.addEventListener("mousedown", () => {
     else changeColor(square);
   }
 });
-grid.addEventListener("mouseenter", () => {
-  color = colorPicker.value;
-});
 body.addEventListener("mouseup", () => {
   isMouseDown = false;
 });
 document.addEventListener("keydown", (event) => keyPress(event)); // keyboard shortcuts
 
 // sidebar buttons
+colorPicker.addEventListener('input', function() {
+  color = colorPicker.value;
+});
 drawButton.addEventListener("click", () => {
   changeMode("draw");
 });

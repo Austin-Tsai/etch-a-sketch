@@ -3,29 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Etch-A-Sketch</title>
+    <title>Pix-Art</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="./assets/favicon.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   </head>
   <body>
     <div class="container">
-      <h1 id="title" class="outlined-white">Etch-A-Sketch</h1>
+      <h1 id="title" class="outlined-white">PIX-ART</h1>
       <div class="body">
         <div class="sidebar">
-            <input id="color-picker" class="clickable" type="color" />
-            <button id="draw" class="clickable outlined-white">Draw</button>
-            <button id="eraser" class="clickable outlined-white">Eraser</button>
-            <button id="paint-bucket" class="clickable outlined-white">Paint Bucket</button>
-            <button id="rainbow" class="clickable outlined-white">Rainbow Mode</button>
-            <button id="grid-lines" class="clickable outlined-white">Toggle Grid Lines</button>
-            <button id="clear" class="clickable outlined-white">Clear</button>
-            <button id="size-change" class="clickable outlined-white">Change Grid Size</button>
-            <button id="download" class="clickable outlined-white">Download Image</button>
-            <button id="download-change" class="clickable outlined-white">Change Download Pixels</button>
-            <div id="controls">
-                <button id="undo" class="clickable outlined-white">Undo</button>
-                <button id="redo" class="clickable outlined-white">Redo</button>
-            </div>
+          <input id="color-picker" class="clickable" type="color" />
+          <button id="draw" class="clickable outlined-white">Draw</button>
+          <button id="eraser" class="clickable outlined-white">Eraser</button>
+          <button id="paint-bucket" class="clickable outlined-white">
+            Paint Bucket
+          </button>
+          <button id="rainbow" class="clickable outlined-white">
+            Rainbow Mode
+          </button>
+          <button id="grid-lines" class="clickable outlined-white">
+            Toggle Grid Lines
+          </button>
+          <button id="clear" class="clickable outlined-white">Clear</button>
+          <button id="size-change" class="clickable outlined-white">
+            Change Grid Size
+          </button>
+          <button id="download" class="clickable outlined-white">
+            Download Image
+          </button>
+          <button id="download-change" class="clickable outlined-white">
+            Change Download Pixels
+          </button>
+          <div id="controls">
+            <button id="undo" class="clickable outlined-white">Undo</button>
+            <button id="redo" class="clickable outlined-white">Redo</button>
+          </div>
+          <div class="tooltip outlined-white">
+            ?
+            <span class="tooltiptext"
+              ><p>Draw on the canvas to the right</p>
+              <p>Switch between draw, eraser, bucket, and rainbow modes</p>
+              <p>Shift click with the eraser and rainbow modes active to have a bucket effect</p>
+              <p><ul>Hotkeys are: 
+                <li>(1) color picker</li>
+                <li>(2) draw</li> 
+                <li>(3) eraser</li>
+                <li>(4) bucket</li> 
+                <li>(5) rainbow</li>
+                <li>(ctrl+z/cmd+z) undo</li>
+                <li>(ctrl+y/cmd+y) redo</li>
+              </ul></p>
+              <p>Download the image when you're done</p>
+              <p>Fun Fact: All of the custom cursor images and the favicon were made in this website</p>
+            </span>
+          </div>
         </div>
         <div id="grid"></div>
       </div>
