@@ -384,13 +384,13 @@ document.addEventListener("keydown", (event) => {
           color = "#f4c55f";
           changeMode("draw");
         } else if (key === 2) {
-          button = paintBucketButton;
-          color = "#78bfda";
-          changeMode("bucket");
-        } else if (key === 3) {
           button = eraserButton;
           color = "#f6abde";
           changeMode("eraser");
+        } else if (key === 3) {
+          button = paintBucketButton;
+          color = "#78bfda";
+          changeMode("bucket");
         } else if (key === 4) {
           button = rainbowButton;
           changeMode("rainbow");
