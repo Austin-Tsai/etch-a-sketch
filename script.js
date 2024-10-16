@@ -1,5 +1,61 @@
+// variables
+let isMouseDown = false;
+let numSquares = 16; // default grid size
+let color = "#000"; // default color option
+let draw = true; // keep track of if eraser mode is enabled (is true for all other modes)
+let activeSquare = null; // keep track of square the cursor is in
+let gridLines = true;
+let isPaintBucketActive = false;
+let rainbow = false;
+//undo and redo buttons
+let undoStack = [];
+let redoStack = [];
+let squarePixels = 1; // default pixels per square in the downloaded image
+const body = document.querySelector("body");
+const grid = document.getElementById("grid");
+const colorPicker = document.getElementById("color-picker");
+const drawButton = document.getElementById("draw");
+const eraserButton = document.getElementById("eraser");
+const paintBucketButton = document.getElementById("paint-bucket");
+const rainbowButton = document.getElementById("rainbow");
+const gridButton = document.getElementById("grid-lines");
+const clearButton = document.getElementById("clear");
+const sizeChange = document.getElementById("size-change");
+const undoButton = document.getElementById("undo");
+const redoButton = document.getElementById("redo");
+const downloadButton = document.getElementById("download");
+const downloadChangeButton = document.getElementById("download-change");
+
+// default appearance indicating that there is nothing in the undo stack or redo stack
+undoButton.setAttribute(
+  "style",
+  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+);
+redoButton.setAttribute(
+  "style",
+  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+);
+
+//functions
+
+// get a random rainbow color for rainbow mode
+const getRandomRainbowColor = () => {
+  const rainbowColors = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "indigo",
+    "violet",
+  ];
+  const randomIndex = Math.floor(Math.random() * rainbowColors.length);
+  return rainbowColors[randomIndex];
+};
+
+// for highlighting a square with the correct color when the mouse hovers over it
 const enter = (square) => {
-  activeSquare = square;
+  activeSquare = square; // make active square the one the mouse is in
   if (draw) {
     if (rainbow) {
       square.dataset.rainbow = getRandomRainbowColor();
@@ -8,6 +64,7 @@ const enter = (square) => {
   } else square.style.backgroundColor = "transparent";
 };
 
+// reset color of the square when the mouse leaves it
 const leave = (square) => {
   if (square === activeSquare) {
     activeSquare = null; // Clear active square if the mouse leaves
@@ -15,12 +72,14 @@ const leave = (square) => {
   square.style.backgroundColor = square.dataset.color;
 };
 
+// change color of the selected square according to the drawing mode
 const changeColor = (square, checkShift = false) => {
+  // If paint bucket is active, color fill the area
   if (isPaintBucketActive) {
-    // If paint bucket is active, fill the area
     paintBucket(square);
   } else {
     if (draw) {
+      // bucket option for rainbow
       if (rainbow && checkShift) paintBucket(square, "rainbow");
       else if (rainbow) {
         square.dataset.color = square.dataset.rainbow;
@@ -30,6 +89,7 @@ const changeColor = (square, checkShift = false) => {
         square.style.backgroundColor = square.dataset.color;
       }
     } else {
+      // bucket option for erase
       if (checkShift) paintBucket(square, "transparent");
       else {
         square.dataset.color = "transparent";
@@ -39,9 +99,11 @@ const changeColor = (square, checkShift = false) => {
   }
 };
 
+// set up algorithm to fill the area with the corresponding
 const paintBucket = (square, replacementColor = color) => {
   const targetColor = square.dataset.color; // original color
   if (replacementColor === "rainbow") {
+    // fill with rainbow pattern
     floodFill(square, targetColor, "rainbow");
   } else if (targetColor !== replacementColor) {
     // Only fill if colors are different
@@ -49,20 +111,25 @@ const paintBucket = (square, replacementColor = color) => {
   }
 };
 
+// used with paintBucket
 const floodFill = (square, targetColor, replacementColor) => {
   const queue = [square];
   const squares = document.querySelectorAll(".square");
+
+  // prevent rainbow fill from changing the first square to a different color than hover color
   let first = true;
 
   while (queue.length > 0) {
     const currentSquare = queue.shift();
-    // If the current square's color is not the target color, skip it
+    // If the current square's color is not the intended target color, skip it
     if (currentSquare.dataset.color !== targetColor) continue;
+
     if (first && replacementColor === "rainbow") {
       first = false;
       currentSquare.dataset.color = currentSquare.dataset.rainbow;
       currentSquare.style.backgroundColor = currentSquare.dataset.rainbow;
     }
+
     // Update the square's color
     else if (replacementColor === "rainbow") {
       const random = getRandomRainbowColor();
@@ -86,20 +153,48 @@ const floodFill = (square, targetColor, replacementColor) => {
   }
 };
 
-const getRandomRainbowColor = () => {
-  const rainbowColors = [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "indigo",
-    "violet",
-  ];
-  const randomIndex = Math.floor(Math.random() * rainbowColors.length);
-  return rainbowColors[randomIndex];
+// makes the grid the canvas is on
+const createGrid = () => {
+  for (let i = 0; i < numSquares; i++) {
+    const row = document.createElement("div");
+    row.classList.add("row");
+    for (let j = 0; j < numSquares; j++) {
+      const square = document.createElement("div");
+      square.classList.add("square");
+
+      // initialize and declare attributes to each square in the grid
+      square.dataset.color = "transparent";
+      square.dataset.rainbow = getRandomRainbowColor();
+      square.style.width = `${640 / numSquares}px`;
+      square.style.height = `${640 / numSquares}px`;
+      if (gridLines) {
+        square.style.borderRightWidth = `${1 / numSquares}px`;
+        square.style.borderBottomWidth = `${1 / numSquares}px`;
+      } else {
+        square.style.border = "none";
+      }
+
+      // interaction between mouse and square to draw
+      square.addEventListener("mouseenter", () => {
+        enter(square);
+      });
+      square.addEventListener("mouseleave", () => {
+        leave(square);
+      });
+      square.addEventListener("mouseover", () => {
+        if (isMouseDown) {
+          if (event.shiftKey) changeColor(square, true); // for bucket options
+          else changeColor(square);
+        }
+      });
+
+      row.appendChild(square);
+    }
+    grid.appendChild(row);
+  }
 };
 
+// used for clear button
 const resetColors = () => {
   document.querySelectorAll(".square").forEach((square) => {
     square.dataset.color = "transparent"; // Clear the dataset color
@@ -107,6 +202,7 @@ const resetColors = () => {
   });
 };
 
+// toggles the grid lines for the user to get a better view of the canvas
 const toggleGridLines = () => {
   if (gridLines) {
     document.querySelectorAll(".square").forEach((square) => {
@@ -122,6 +218,7 @@ const toggleGridLines = () => {
   }
 };
 
+// changes the amount of squares in the grid according to user input
 const changeSize = () => {
   let result;
   do {
@@ -142,6 +239,44 @@ const changeSize = () => {
   }
 };
 
+const downloadGrid = () => {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  // set squareSize based on squarePixels
+  const squareSize = squarePixels;
+  canvas.width = squareSize * numSquares;
+  canvas.height = squareSize * numSquares;
+
+  // mirror image so the png matches the view of the grid
+  ctx.scale(-1, 1); // flip horizontally
+  ctx.translate(-canvas.width, 0); // translate back to the original position
+
+  ctx.translate(canvas.width / 2, canvas.height / 2); // move to center
+  ctx.rotate(Math.PI / 2); // rotate 90 degrees
+  ctx.translate(-canvas.height / 2, -canvas.width / 2); // move back to the top left
+
+  // draw each square
+  document.querySelectorAll(".square").forEach((square, index) => {
+    const x = (index % numSquares) * squareSize; // calculate x position
+    const y = Math.floor(index / numSquares) * squareSize; // calculate y position
+
+    // Set the fill color to the square's dataset color
+    ctx.fillStyle = square.dataset.color || "transparent"; // fallback to transparent
+    ctx.fillRect(x, y, squareSize, squareSize); // draw the square
+  });
+
+  // convert canvas to Blob and save it
+  canvas.toBlob((blob) => {
+    if (blob) {
+      saveAs(blob, "sketch-image.png"); // prompt the user to save the file
+    } else {
+      console.error("Blob conversion failed.");
+    }
+  }, "image/png");
+};
+
+// changes the pixels per square in the downloaded image according to user input
 const downloadSize = () => {
   let result;
   do {
@@ -159,155 +294,25 @@ const downloadSize = () => {
   }
 };
 
-const createGrid = () => {
-  for (let i = 0; i < numSquares; i++) {
-    const row = document.createElement("div");
-    row.classList.add("row");
-    for (let j = 0; j < numSquares; j++) {
-      const square = document.createElement("div");
-      square.classList.add("square");
-
-      square.dataset.color = "transparent";
-      square.dataset.rainbow = getRandomRainbowColor();
-      square.style.width = `${640 / numSquares}px`;
-      square.style.height = `${640 / numSquares}px`;
-      if (gridLines) {
-        square.style.borderRightWidth = `${1 / numSquares}px`;
-        square.style.borderBottomWidth = `${1 / numSquares}px`;
-      } else {
-        square.style.border = "none";
-      }
-      square.addEventListener("mouseenter", () => {
-        enter(square);
-      });
-      square.addEventListener("mouseleave", () => {
-        leave(square);
-      });
-
-      square.addEventListener("mouseover", () => {
-        if (isMouseDown) {
-          if (event.shiftKey) changeColor(square, true);
-          else changeColor(square);
-        }
-      });
-      row.appendChild(square);
-    }
-    grid.appendChild(row);
-  }
-};
-
-const body = document.querySelector("body");
-const grid = document.getElementById("grid");
-const colorPicker = document.getElementById("color-picker");
-
-let isMouseDown = false;
-
-// Set up event listeners for the grid
-grid.addEventListener("mousedown", () => {
-  event.preventDefault();
-  isMouseDown = true;
-  const square = event.target.closest(".square");
-  if (square) {
-    captureState();
-    changeColor(square);
-  }
-});
-
-grid.addEventListener("click", (event) => {
-  const square = event.target.closest(".square");
-  if (square && !isMouseDown) {
-    if (isPaintBucketActive) {
-      paintBucket(square);
-    } else if (event.shiftKey && !draw) {
-      paintBucket(square, "transparent");
-    } else if (event.shiftKey && rainbow) {
-      paintBucket(square, "rainbow");
-    } else changeColor(square); // Regular color change logic
-  }
-});
-
-grid.addEventListener("mouseup", () => {
-  isMouseDown = false;
-});
-grid.addEventListener("mouseenter", () => {
-  color = colorPicker.value;
-});
-body.addEventListener("mouseup", () => {
-  isMouseDown = false;
-});
-let draw = true;
-let activeSquare = null;
-
-const drawButton = document.getElementById("draw");
-drawButton.addEventListener("click", () => {
-  changeMode("draw");
-});
-
-const eraserButton = document.getElementById("eraser");
-eraserButton.addEventListener("click", () => {
-  changeMode("eraser");
-});
-
-const paintBucketButton = document.getElementById("paint-bucket");
-let isPaintBucketActive = false;
-
-paintBucketButton.addEventListener("click", () => {
-  changeMode("bucket");
-});
-
-const rainbowButton = document.getElementById("rainbow");
-let rainbow = false;
-rainbowButton.addEventListener("click", () => {
-  changeMode("rainbow");
-});
-
-const gridButton = document.getElementById("grid-lines");
-let gridLines = true;
-gridButton.addEventListener("click", toggleGridLines);
-
-const clearButton = document.getElementById("clear");
-clearButton.addEventListener("click", () => {
-  captureState();
-  resetColors();
-});
-
-const sizeChange = document.getElementById("size-change");
-sizeChange.addEventListener("click", changeSize);
-let numSquares = 16;
-
-let color = "#000";
-createGrid();
-
-const undoButton = document.getElementById("undo");
-const redoButton = document.getElementById("redo");
-
-undoButton.addEventListener("click", () => undo());
-redoButton.addEventListener("click", () => redo());
-//undo and redo buttons
-let undoStack = [];
-let redoStack = [];
-
-undoButton.setAttribute(
-  "style",
-  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
-);
-redoButton.setAttribute(
-  "style",
-  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
-);
-
 const undo = () => {
   if (undoStack.length > 0) {
-    const lastState = undoStack.pop();
+    // save current state to be put in the redo stack
     const currentState = Array.from(document.querySelectorAll(".square")).map(
       (square) => square.dataset.color
     );
+    redoStack.push(currentState);
+
+    // redo stack is not empty
     redoButton.setAttribute(
       "style",
       "color: none; background-color: none; border-color: none;"
     );
-    redoStack.push(currentState);
+
+    // revert to previous state
+    const lastState = undoStack.pop();
     applyState(lastState);
+
+    // if undo stack is now empty, change appearance
     if (undoStack.length == 0)
       undoButton.setAttribute(
         "style",
@@ -318,16 +323,23 @@ const undo = () => {
 
 const redo = () => {
   if (redoStack.length > 0) {
-    const nextState = redoStack.pop();
+    // save current state to be put in the undo stack
     const currentState = Array.from(document.querySelectorAll(".square")).map(
       (square) => square.dataset.color
     );
+    undoStack.push(currentState);
+
+    // undo stack is not empty
     undoButton.setAttribute(
       "style",
       "color: none; background-color: none; border-color: none;"
     );
-    undoStack.push(currentState);
+
+    // revert to previous state
+    const nextState = redoStack.pop();
     applyState(nextState);
+
+    // if redo stack is now empty, change appearance
     if (redoStack.length == 0)
       redoButton.setAttribute(
         "style",
@@ -336,23 +348,29 @@ const redo = () => {
   }
 };
 
+// save state to be used for undo and redo calls
 const captureState = () => {
+  // allow for an undo as a new action was made
   const currentState = Array.from(document.querySelectorAll(".square")).map(
     (square) => square.dataset.color
   );
   undoStack.push(currentState);
+
+  // indicate undo stack is not empty now
   undoButton.setAttribute(
     "style",
     "color: none; background-color: none; border-color: none;"
   );
+
+  redoStack = []; // Clear redo stack on new action
+  // indicate redo stack is empty now
   redoButton.setAttribute(
     "style",
     "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
   );
-  redoStack = []; // Clear redo stack on new action
 };
 
-// Function to apply a state to the grid
+// function to apply a state to the grid
 const applyState = (state) => {
   document.querySelectorAll(".square").forEach((square, index) => {
     square.dataset.color = state[index];
@@ -360,25 +378,27 @@ const applyState = (state) => {
   });
 };
 
-document.addEventListener("keydown", (event) => {
+const keyPress = (event) => {
+  // shortcuts for undoing and redoing
   const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
   const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z";
   const isRedo =
     (isMac ? event.metaKey : event.ctrlKey) &&
-    (event.key === "y" || (event.key === "Z" && event.shiftKey)); // Shift + Z for redo
+    (event.key === "y" || (event.key === "Z" && event.shiftKey)); // shift + Z for redo
 
   if (isUndo) {
-    event.preventDefault(); // Prevent default behavior
+    event.preventDefault();
     undo();
   } else if (isRedo) {
-    event.preventDefault(); // Prevent default behavior
+    event.preventDefault();
     redo();
   } else {
+    // shortcuts to change drawing mode
     let key = Number(event.key);
     if (!(isNaN(key) || event.key === null || event.key === " ")) {
-      if (key > 0 && key < 5) {
-        let button;
-        let color;
+      if (key >= 1 && key <= 4) {
+        let button; // indicate the corresponding button for each shortcut
+        let color; // used to replicate the effect of a button being pressed
         if (key === 1) {
           button = drawButton;
           color = "#f4c55f";
@@ -395,7 +415,10 @@ document.addEventListener("keydown", (event) => {
           button = rainbowButton;
           changeMode("rainbow");
         }
+        // if draw mode is changed while hovering over a square, update the hover effect
         if (activeSquare) enter(activeSquare);
+
+        // replicate the effect of the corresponding button being clicked
         button.classList.add("hover");
         button.style.backgroundColor = color;
         setTimeout(() => {
@@ -409,51 +432,7 @@ document.addEventListener("keydown", (event) => {
       }
     }
   }
-});
-
-const downloadChangeButton = document.getElementById("download-change");
-downloadChangeButton.addEventListener("click", downloadSize);
-let squarePixels = 1;
-
-const downloadButton = document.getElementById("download");
-
-downloadButton.addEventListener("click", () => {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  // Set squareSize based on squarePixels
-  const squareSize = squarePixels; // Each square will be squarePixels wide and high
-  canvas.width = squareSize * numSquares; // Set width based on number of squares
-  canvas.height = squareSize * numSquares; // Set height based on number of squares
-
-  // Flip the canvas horizontally (if needed)
-  ctx.scale(-1, 1); // Flip horizontally
-  ctx.translate(-canvas.width, 0); // Translate back to the original position
-
-  // Rotate the canvas 90 degrees (if needed)
-  ctx.translate(canvas.width / 2, canvas.height / 2); // Move to center
-  ctx.rotate(Math.PI / 2); // Rotate 90 degrees
-  ctx.translate(-canvas.height / 2, -canvas.width / 2); // Move back to the top left
-
-  // Draw each square
-  document.querySelectorAll(".square").forEach((square, index) => {
-    const x = (index % numSquares) * squareSize; // Calculate x position
-    const y = Math.floor(index / numSquares) * squareSize; // Calculate y position
-
-    // Set the fill color to the square's dataset color
-    ctx.fillStyle = square.dataset.color || "transparent"; // Fallback to transparent
-    ctx.fillRect(x, y, squareSize, squareSize); // Draw the square
-  });
-
-  // Convert canvas to Blob and save it
-  canvas.toBlob((blob) => {
-    if (blob) {
-      saveAs(blob, "sketch-image.png"); // Prompt the user to save the file
-    } else {
-      console.error("Blob conversion failed.");
-    }
-  }, "image/png");
-});
+};
 
 const changeMode = (mode) => {
   let cursor = "";
@@ -474,7 +453,6 @@ const changeMode = (mode) => {
       break;
     case "rainbow":
       rainbow = true;
-      isPaintBucketActive = false;
       cursor = "fixed-rainbow-cursor.cur";
       break;
   }
@@ -484,3 +462,51 @@ const changeMode = (mode) => {
       (square) => (square.style.cursor = `url(./assets/${cursor}), auto`)
     );
 };
+
+// event listeners 
+// grid/body
+grid.addEventListener("mousedown", () => {
+  event.preventDefault();
+  isMouseDown = true;
+  const square = event.target.closest(".square");
+  if (square) {
+    captureState(); // for undo/redo functions
+
+    // change first square mouse is on when dragging and allow for clicking
+    if (event.shiftKey) changeColor(square, true);
+    else changeColor(square);
+  }
+});
+grid.addEventListener("mouseenter", () => {
+  color = colorPicker.value;
+});
+body.addEventListener("mouseup", () => {
+  isMouseDown = false;
+});
+document.addEventListener("keydown", (event) => keyPress(event)); // keyboard shortcuts
+
+// sidebar buttons
+drawButton.addEventListener("click", () => {
+  changeMode("draw");
+});
+eraserButton.addEventListener("click", () => {
+  changeMode("eraser");
+});
+paintBucketButton.addEventListener("click", () => {
+  changeMode("bucket");
+});
+rainbowButton.addEventListener("click", () => {
+  changeMode("rainbow");
+});
+gridButton.addEventListener("click", toggleGridLines);
+clearButton.addEventListener("click", () => {
+  captureState(); // allow for undoing/redoing
+  resetColors();
+});
+downloadButton.addEventListener("click", () => downloadGrid());
+downloadChangeButton.addEventListener("click", downloadSize);
+sizeChange.addEventListener("click", changeSize);
+undoButton.addEventListener("click", () => undo());
+redoButton.addEventListener("click", () => redo());
+
+createGrid();
