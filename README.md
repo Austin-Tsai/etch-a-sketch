@@ -7,4 +7,4 @@ Many additional details were added for practice
 
 [Live Website](https://austin-tsai.github.io/pix-art/)
 
-[Website Image](./assets/Pix-Art-Website.png "Preview of website")
+![Website Image](./assets/Pix-Art-Website.png "Preview of website")
