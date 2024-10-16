@@ -182,7 +182,7 @@ const createGrid = () => {
       square.addEventListener("mouseleave", () => {
         leave(square);
       });
-      square.addEventListener("mouseover", () => {
+      square.addEventListener("mouseover", (event) => {
         if (isMouseDown) {
           if (event.shiftKey) changeColor(square, true); // for bucket options
           else changeColor(square);
@@ -470,7 +470,7 @@ const changeMode = (mode) => {
 
 // event listeners
 // grid/body
-grid.addEventListener("mousedown", () => {
+grid.addEventListener("mousedown", (event) => {
   event.preventDefault();
   isMouseDown = true;
   const square = event.target.closest(".square");
