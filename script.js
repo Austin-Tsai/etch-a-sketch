@@ -1,7 +1,7 @@
 // variables
 let isMouseDown = false;
 let numSquares = 16; // default grid size
-let color = "#000"; // default color option
+let color = "#000000"; // default color option
 let draw = true; // keep track of if eraser mode is enabled (is true for all other modes)
 let activeSquare = null; // keep track of square the cursor is in
 let gridLines = true;
@@ -35,13 +35,13 @@ const downloadChangeButton = document.getElementById("download-change");
 // get a random rainbow color for rainbow mode
 const getRandomRainbowColor = () => {
   const rainbowColors = [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "indigo",
-    "violet",
+    "#ff0000",
+    "#ffa500",
+    "#ffff00",
+    "#008000",
+    "#0000ff",
+    "#4b0082",
+    "#ee82ee",
   ];
   const randomIndex = Math.floor(Math.random() * rainbowColors.length);
   return rainbowColors[randomIndex];
@@ -205,8 +205,8 @@ const toggleGridLines = () => {
     gridLines = false;
   } else {
     document.querySelectorAll(".square").forEach((square) => {
-      square.style.borderRight = `solid #000 ${1 / numSquares}px`;
-      square.style.borderBottom = `solid #000 ${1 / numSquares}px`;
+      square.style.borderRight = `solid #000000 ${1 / numSquares}px`;
+      square.style.borderBottom = `solid #000000 ${1 / numSquares}px`;
     });
     gridLines = true;
   }
@@ -298,7 +298,7 @@ const undo = () => {
     // redo stack is not empty
     redoButton.setAttribute(
       "style",
-      "color: #fff; background-color: #bdbcbc; border-color: #717171;"
+      "color: #ffffff; background-color: #bdbcbc; border-color: #717171;"
     );
 
     // revert to previous state
@@ -306,14 +306,15 @@ const undo = () => {
     applyState(lastState);
 
     // save new state if user is still drawing while undoing
-    if (isMouseDown) captureState(); 
+    if (isMouseDown) captureState();
 
     // if undo stack is now empty, change appearance
-    if (undoStack.length == 0) undoButton.setAttribute(
-      "style",
-      "color: none; background-color: none; border-color: none;"
-    );
-      
+    if (undoStack.length == 0)
+      undoButton.setAttribute(
+        "style",
+        "color: none; background-color: none; border-color: none;"
+      );
+
     if (activeSquare) enter(activeSquare); // update square hovering effect
   }
 };
@@ -329,7 +330,7 @@ const redo = () => {
     // undo stack is not empty
     undoButton.setAttribute(
       "style",
-      "color: #fff; background-color: #bdbcbc; border-color: #717171;"
+      "color: #ffffff; background-color: #bdbcbc; border-color: #717171;"
     );
 
     // revert to previous state
@@ -357,7 +358,7 @@ const captureState = () => {
   // indicate undo stack is not empty now
   undoButton.setAttribute(
     "style",
-    "color: #fff; background-color: #bdbcbc; border-color: #717171;"
+    "color: #ffffff; background-color: #bdbcbc; border-color: #717171;"
   );
 
   redoStack = []; // Clear redo stack on new action
@@ -435,9 +436,22 @@ const keyPress = (event) => {
         hiddenColorPicker.style.display = "block";
 
         // timeout for 0ms because for some reason no timeout makes the color picker appear in the corner
-        setTimeout(() => { 
+        setTimeout(() => {
           hiddenColorPicker.click();
         }, 0);
+      } else if (key === 6) {
+        if (
+          activeSquare &&
+          activeSquare.dataset.color !== "transparent" &&
+          draw &&
+          !rainbow
+        ) {
+          hiddenColorPicker.value =
+            colorPicker.value =
+            color =
+              activeSquare.dataset.color;
+          enter(activeSquare);
+        }
       }
     }
   }
