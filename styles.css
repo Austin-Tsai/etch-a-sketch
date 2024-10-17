@@ -216,7 +216,7 @@ body {
   z-index: 1;
   bottom: 150%;
   left: 50%;
-  margin-left: -150px;
+  margin-left: -165px;
 }
 
 .tooltip .tooltiptext::after {
