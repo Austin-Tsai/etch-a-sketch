@@ -315,6 +315,9 @@ const undo = () => {
     const lastState = undoStack.pop();
     applyState(lastState);
 
+    // save new state if user is still drawing while undoing
+    if (isMouseDown) captureState(); 
+
     // if undo stack is now empty, change appearance
     if (undoStack.length == 0)
       undoButton.setAttribute(
@@ -440,7 +443,7 @@ const keyPress = (event) => {
         hiddenColorPicker.style.left = `${mouseX - 75}px`;
         hiddenColorPicker.style.top = `${mouseY - 50}px`;
         hiddenColorPicker.style.display = "block";
-        
+
         // timeout for 0ms because for some reason no timeout makes the color picker appear in the corner
         setTimeout(() => { 
           hiddenColorPicker.click();
