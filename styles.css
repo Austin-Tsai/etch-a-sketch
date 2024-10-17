@@ -1,9 +1,10 @@
 body {
   font-family: "Courier New", Courier, monospace;
   background-color: #2e2e2e;
-  background-image: url('./assets/pix-art-background.png');
+  background-image: url('./assets/pix-art-background-final.png');
   background-repeat: no-repeat;
   background-attachment: fixed;
+  background-position: center;
   background-size: 100% 100%;
 }
 
@@ -187,6 +188,11 @@ body {
   color: #ffffff;
   text-shadow: -1px -1px 0 #000000, 0 -1px 0 #000000, 1px -1px 0 #000000, 1px 0 0 #000000,
     1px 1px 0 #000000, 0 1px 0 #000000, -1px 1px 0 #000000, -1px 0 0 #000000;
+}
+#title.outlined-white{
+  color: #ffffff;
+  text-shadow: -2px -2px 0 #000000, 0 -2px 0 #000000, 2px -2px 0 #000000, 2px 0 0 #000000,
+    2px 2px 0 #000000, 0 2px 0 #000000, -2px 2px 0 #000000, -2px 0 0 #000000;
 }
 
 .tooltip {
