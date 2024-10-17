@@ -285,7 +285,7 @@ const downloadSize = () => {
   let result;
   do {
     result = +prompt(
-      "Choose the number of pixels each square in the grid takes up in downloaded image: 1-128 (0 exits, 1 is default)"
+      "Choose the number of pixels each square in the grid takes up in the downloaded image: 1-128 (0 exits, 1 is default)"
     );
   } while (
     Number.isNaN(result) ||
