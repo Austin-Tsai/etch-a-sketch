@@ -490,8 +490,6 @@ document.addEventListener("keydown", (event) => keyPress(event)); // keyboard sh
 // sidebar buttons
 colorPicker.addEventListener("input", function () {
   color = colorPicker.value;
-  colorPicker.setAttribute("type", "text");
-  colorPicker.setAttribute("type", "color");
 });
 drawButton.addEventListener("click", () => {
   changeMode("draw");
