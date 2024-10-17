@@ -395,22 +395,22 @@ const keyPress = (event) => {
     // shortcuts to change drawing mode
     let key = Number(event.key);
     if (!(isNaN(key) || event.key === null || event.key === " ")) {
-      if (key >= 2 && key <= 5) {
+      if (key >= 3 && key <= 6) {
         let button; // indicate the corresponding button for each shortcut
         let color; // used to replicate the effect of a button being pressed
-        if (key === 2) {
+        if (key === 3) {
           button = drawButton;
           color = "#f4c55f";
           changeMode("draw");
-        } else if (key === 3) {
+        } else if (key === 4) {
           button = eraserButton;
           color = "#f6abde";
           changeMode("eraser");
-        } else if (key === 4) {
+        } else if (key === 5) {
           button = paintBucketButton;
           color = "#78bfda";
           changeMode("bucket");
-        } else if (key === 5) {
+        } else if (key === 6) {
           button = rainbowButton;
           changeMode("rainbow");
         }
@@ -428,7 +428,7 @@ const keyPress = (event) => {
           button.classList.remove("hover");
           button.classList.remove("active");
         }, 150);
-      } else if (key === 1) {
+      } else if (key === 2) {
         // active color picker next to mouse
         hiddenColorPicker.value = colorPicker.value;
         hiddenColorPicker.style.left = `${mouseX - 75}px`;
@@ -439,7 +439,7 @@ const keyPress = (event) => {
         setTimeout(() => {
           hiddenColorPicker.click();
         }, 0);
-      } else if (key === 6) {
+      } else if (key === 1) {
         if (
           activeSquare &&
           activeSquare.dataset.color !== "transparent" &&
