@@ -30,16 +30,6 @@ const redoButton = document.getElementById("redo");
 const downloadButton = document.getElementById("download");
 const downloadChangeButton = document.getElementById("download-change");
 
-// default appearance indicating that there is nothing in the undo stack or redo stack
-undoButton.setAttribute(
-  "style",
-  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
-);
-redoButton.setAttribute(
-  "style",
-  "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
-);
-
 //functions
 
 // get a random rainbow color for rainbow mode
@@ -308,7 +298,7 @@ const undo = () => {
     // redo stack is not empty
     redoButton.setAttribute(
       "style",
-      "color: none; background-color: none; border-color: none;"
+      "color: #fff; background-color: #bdbcbc; border-color: #717171;"
     );
 
     // revert to previous state
@@ -319,11 +309,11 @@ const undo = () => {
     if (isMouseDown) captureState(); 
 
     // if undo stack is now empty, change appearance
-    if (undoStack.length == 0)
-      undoButton.setAttribute(
-        "style",
-        "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
-      );
+    if (undoStack.length == 0) undoButton.setAttribute(
+      "style",
+      "color: none; background-color: none; border-color: none;"
+    );
+      
     if (activeSquare) enter(activeSquare); // update square hovering effect
   }
 };
@@ -339,7 +329,7 @@ const redo = () => {
     // undo stack is not empty
     undoButton.setAttribute(
       "style",
-      "color: none; background-color: none; border-color: none;"
+      "color: #fff; background-color: #bdbcbc; border-color: #717171;"
     );
 
     // revert to previous state
@@ -350,7 +340,7 @@ const redo = () => {
     if (redoStack.length == 0)
       redoButton.setAttribute(
         "style",
-        "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+        "color: none; background-color: none; border-color: none;"
       );
     if (activeSquare) enter(activeSquare); // update square hovering effect
   }
@@ -367,14 +357,14 @@ const captureState = () => {
   // indicate undo stack is not empty now
   undoButton.setAttribute(
     "style",
-    "color: none; background-color: none; border-color: none;"
+    "color: #fff; background-color: #bdbcbc; border-color: #717171;"
   );
 
   redoStack = []; // Clear redo stack on new action
   // indicate redo stack is empty now
   redoButton.setAttribute(
     "style",
-    "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
+    "color: none; background-color: none; border-color: none;"
   );
 };
 

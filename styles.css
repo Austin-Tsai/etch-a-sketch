@@ -164,8 +164,9 @@ body {
 
 #undo,
 #redo {
-  background-color: #bbbbbb;
-  border: solid #6c6b6b 2px;
+  background-color: #959494;
+  color: #d8d8d8;
+  border: solid #626262 2px;
 }
 
 .clickable:hover,
