@@ -302,7 +302,6 @@ const undo = () => {
       (square) => square.dataset.color
     );
     redoStack.push(currentState);
-
     // redo stack is not empty
     redoButton.setAttribute(
       "style",
@@ -319,6 +318,7 @@ const undo = () => {
         "style",
         "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
       );
+    if (activeSquare) enter(activeSquare); // update square hovering effect
   }
 };
 
@@ -346,6 +346,7 @@ const redo = () => {
         "style",
         "color: #cdcdcd; background-color: #dadada; border-color: #8f8f8f;"
       );
+    if (activeSquare) enter(activeSquare); // update square hovering effect
   }
 };
 
@@ -430,9 +431,8 @@ const keyPress = (event) => {
           button.classList.remove("hover");
           button.classList.remove("active");
         }, 150);
-      }
-      else if (key === 1) // active color picker
-      {
+      } else if (key === 1) {
+        // active color picker
         colorPicker.click();
       }
     }
@@ -488,7 +488,7 @@ body.addEventListener("mouseup", () => {
 document.addEventListener("keydown", (event) => keyPress(event)); // keyboard shortcuts
 
 // sidebar buttons
-colorPicker.addEventListener('input', function() {
+colorPicker.addEventListener("input", function () {
   color = colorPicker.value;
 });
 drawButton.addEventListener("click", () => {
