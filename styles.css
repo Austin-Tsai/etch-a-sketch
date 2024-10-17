@@ -239,3 +239,9 @@ ul {
   list-style: none;
   text-align: left;
 }
+
+#hidden-color-picker {
+  display: none;
+  position: absolute;
+  z-index: 10;
+}

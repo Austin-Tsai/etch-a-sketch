@@ -11,6 +11,10 @@ let rainbow = false;
 let undoStack = [];
 let redoStack = [];
 let squarePixels = 1; // default pixels per square in the downloaded image
+let mouseX = 0;
+let mouseY = 0;
+
+const hiddenColorPicker = document.getElementById("hidden-color-picker");
 const body = document.querySelector("body");
 const grid = document.getElementById("grid");
 const colorPicker = document.getElementById("color-picker");
@@ -74,7 +78,6 @@ const leave = (square) => {
 
 // change color of the selected square according to the drawing mode
 const changeColor = (square, checkShift = false) => {
-  console.log("test");
   // If paint bucket is active, color fill the area
   if (isPaintBucketActive) {
     paintBucket(square);
@@ -432,8 +435,16 @@ const keyPress = (event) => {
           button.classList.remove("active");
         }, 150);
       } else if (key === 1) {
-        // active color picker
-        colorPicker.click();
+        // active color picker next to mouse
+        hiddenColorPicker.value = colorPicker.value;
+        hiddenColorPicker.style.left = `${mouseX - 75}px`;
+        hiddenColorPicker.style.top = `${mouseY - 50}px`;
+        hiddenColorPicker.style.display = "block";
+        
+        // timeout for 0ms because for some reason no timeout makes the color picker appear in the corner
+        setTimeout(() => { 
+          hiddenColorPicker.click();
+        }, 0);
       }
     }
   }
@@ -486,6 +497,27 @@ body.addEventListener("mouseup", () => {
   isMouseDown = false;
 });
 document.addEventListener("keydown", (event) => keyPress(event)); // keyboard shortcuts
+// updates mouse coordinates
+document.addEventListener("mousemove", (event) => {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+});
+// initialize mouse coordinates to a place other than 0,0
+document.addEventListener("DOMContentLoaded", () => {
+  mouseX = window.innerWidth / 2;
+  mouseY = window.innerWidth / 2;
+});
+// makes hidden color picker disappear when clicked off of
+document.addEventListener("click", (event) => {
+  if (!hiddenColorPicker.contains(event.target)) {
+    hiddenColorPicker.style.display = "none";
+  }
+});
+// matches color picker values
+hiddenColorPicker.addEventListener("input", () => {
+  color = hiddenColorPicker.value;
+  colorPicker.value = hiddenColorPicker.value;
+});
 
 // sidebar buttons
 colorPicker.addEventListener("input", function () {
