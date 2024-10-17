@@ -7,6 +7,7 @@ let activeSquare = null; // keep track of square the cursor is in
 let gridLines = true;
 let isPaintBucketActive = false;
 let rainbow = false;
+let backgroundOn = true;
 //undo and redo buttons
 let undoStack = [];
 let redoStack = [];
@@ -452,6 +453,15 @@ const keyPress = (event) => {
               activeSquare.dataset.color;
           enter(activeSquare);
         }
+      } else if (key === 7) {
+        if (backgroundOn) {
+          document.body.style.backgroundImage = "none";
+          backgroundOn = false;
+        } else {
+          document.body.style.backgroundImage =
+            "url('./assets/pix-art-background.png')";
+            backgroundOn = true;
+        }
       }
     }
   }
@@ -554,3 +564,6 @@ undoButton.addEventListener("click", () => undo());
 redoButton.addEventListener("click", () => redo());
 
 createGrid();
+window.onbeforeunload = function(e) {
+  return 'Are you sure you want to close the page?';
+};
