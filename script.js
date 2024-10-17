@@ -459,7 +459,7 @@ const keyPress = (event) => {
           backgroundOn = false;
         } else {
           document.body.style.backgroundImage =
-            "url('./assets/pix-art-background.png')";
+            "url('./assets/pix-art-background-final.png')";
             backgroundOn = true;
         }
       }
