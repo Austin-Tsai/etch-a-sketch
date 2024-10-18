@@ -14,6 +14,28 @@
       <h1 id="title" class="outlined-white">PIX-ART</h1>
       <div class="body">
         <div class="sidebar">
+          <div class="tooltip outlined-white">
+            ?
+            <span class="tooltiptext"
+              ><p>Draw on the canvas to the right</p>
+              <p>Switch between draw, eraser, bucket, and rainbow modes</p>
+              <p>Shift click with the eraser and rainbow modes active to have a bucket effect</p>
+              <p><ul>Hotkeys are: 
+                <li>(1) color eye dropper</li>
+                <li>(2) color picker</li>
+                <li>(3) draw</li> 
+                <li>(4) eraser</li>
+                <li>(5) bucket</li> 
+                <li>(6) rainbow</li>
+                <li>(7) toggle background image</li>
+                <li>(ctrl+z/cmd+z) undo</li>
+                <li>(ctrl+y/cmd+y) redo</li>
+              </ul></p>
+              <p>Download the image when you're done (use the change download pixel size button for a larger/smaller image)</p>
+              <p>Fun Fact: All of the custom cursors, the background, and the favicon were made in this website</p>
+              <p>*Colors seem to break if using a dark mode extension like Dark Reader so disable those</p>
+            </span>
+          </div>
           <input id="color-picker" class="clickable" type="color" />
           <button id="draw" class="clickable outlined-white">Draw</button>
           <button id="eraser" class="clickable outlined-white">Eraser</button>
@@ -39,28 +61,6 @@
           <div id="controls">
             <button id="undo" class="clickable outlined-white">Undo</button>
             <button id="redo" class="clickable outlined-white">Redo</button>
-          </div>
-          <div class="tooltip outlined-white">
-            ?
-            <span class="tooltiptext"
-              ><p>Draw on the canvas to the right</p>
-              <p>Switch between draw, eraser, bucket, and rainbow modes</p>
-              <p>Shift click with the eraser and rainbow modes active to have a bucket effect</p>
-              <p><ul>Hotkeys are: 
-                <li>(1) color eye dropper</li>
-                <li>(2) color picker</li>
-                <li>(3) draw</li> 
-                <li>(4) eraser</li>
-                <li>(5) bucket</li> 
-                <li>(6) rainbow</li>
-                <li>(7) toggle background image</li>
-                <li>(ctrl+z/cmd+z) undo</li>
-                <li>(ctrl+y/cmd+y) redo</li>
-              </ul></p>
-              <p>Download the image when you're done (use the change download pixel size button for a larger/smaller image)</p>
-              <p>Fun Fact: All of the custom cursors, the background, and the favicon were made in this website</p>
-              <p>*Colors seem to break if using a dark mode extension like Dark Reader so disable those</p>
-            </span>
           </div>
         </div>
         <div id="grid"></div>
