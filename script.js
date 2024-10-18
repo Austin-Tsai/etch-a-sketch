@@ -4,7 +4,7 @@ let numSquares = 16; // default grid size
 let color = "#000000"; // default color option
 let draw = true; // keep track of if eraser mode is enabled (is true for all other modes)
 let activeSquare = null; // keep track of square the cursor is in
-let gridLines = true;
+let gridLines = false;
 let isPaintBucketActive = false;
 let rainbow = false;
 let backgroundOn = true;
@@ -56,7 +56,7 @@ const enter = (square) => {
       square.dataset.rainbow = getRandomRainbowColor();
       square.style.backgroundColor = square.dataset.rainbow;
     } else square.style.backgroundColor = color;
-  } else square.style.backgroundColor = "transparent";
+  } else square.style.backgroundColor = square.dataset.transparentColor;
 };
 
 // reset color of the square when the mouse leaves it
@@ -64,7 +64,10 @@ const leave = (square) => {
   if (square === activeSquare) {
     activeSquare = null; // Clear active square if the mouse leaves
   }
-  square.style.backgroundColor = square.dataset.color;
+  if (square.dataset.color === "transparent") {
+    square.style.backgroundColor = square.dataset.transparentColor;
+  }
+  else square.style.backgroundColor = square.dataset.color;
 };
 
 // change color of the selected square according to the drawing mode
@@ -88,7 +91,7 @@ const changeColor = (square, checkShift = false) => {
       if (checkShift) paintBucket(square, "transparent");
       else {
         square.dataset.color = "transparent";
-        square.style.backgroundColor = "transparent";
+        square.style.backgroundColor = square.dataset.transparentColor;
       }
     }
   }
@@ -132,7 +135,10 @@ const floodFill = (square, targetColor, replacementColor) => {
       currentSquare.style.backgroundColor = random;
     } else {
       currentSquare.dataset.color = replacementColor;
-      currentSquare.style.backgroundColor = replacementColor;
+      if (replacementColor === "transparent") {
+        currentSquare.style.backgroundColor = currentSquare.dataset.transparentColor;
+      }
+      else currentSquare.style.backgroundColor = replacementColor;
     }
 
     // Get the index of the current square
@@ -159,6 +165,13 @@ const createGrid = () => {
 
       // initialize and declare attributes to each square in the grid
       square.dataset.color = "transparent";
+      square.dataset.transparentColor = "#ffffff";
+      if (i % 2 === 0) {
+        if (j % 2 === 1) square.dataset.transparentColor = "#e0e0e0";
+      } else {
+        if (j % 2 === 0) square.dataset.transparentColor = "#e0e0e0";
+      }
+      square.style.backgroundColor = square.dataset.transparentColor;
       square.dataset.rainbow = getRandomRainbowColor();
       square.style.width = `${640 / numSquares}px`;
       square.style.height = `${640 / numSquares}px`;
@@ -193,7 +206,7 @@ const createGrid = () => {
 const resetColors = () => {
   document.querySelectorAll(".square").forEach((square) => {
     square.dataset.color = "transparent"; // Clear the dataset color
-    square.style.backgroundColor = "transparent"; // Reset the background color
+    square.style.backgroundColor = square.dataset.transparentColor; // Reset the background color
   });
 };
 
@@ -206,8 +219,8 @@ const toggleGridLines = () => {
     gridLines = false;
   } else {
     document.querySelectorAll(".square").forEach((square) => {
-      square.style.borderRight = `solid #000000 ${1 / numSquares}px`;
-      square.style.borderBottom = `solid #000000 ${1 / numSquares}px`;
+      square.style.borderRight = `solid #4f4f4f ${1 / numSquares}px`;
+      square.style.borderBottom = `solid #4f4f4f ${1 / numSquares}px`;
     });
     gridLines = true;
   }
@@ -460,7 +473,7 @@ const keyPress = (event) => {
         } else {
           document.body.style.backgroundImage =
             "url('./assets/pix-art-background-final.png')";
-            backgroundOn = true;
+          backgroundOn = true;
         }
       }
     }
@@ -564,6 +577,6 @@ undoButton.addEventListener("click", () => undo());
 redoButton.addEventListener("click", () => redo());
 
 createGrid();
-window.onbeforeunload = function(e) {
-  return 'Are you sure you want to close the page?';
+window.onbeforeunload = function (e) {
+  return "Are you sure you want to close the page?";
 };
