@@ -305,11 +305,7 @@ const undo = () => {
   if (undoStack.length > 0) {
     // save current state to be put in the redo stack
     const currentState = Array.from(document.querySelectorAll(".square")).map(
-      (square) => {
-        if (square.dataset.color === "transparent")
-          return square.dataset.transparentColor;
-        else return square.dataset.color;
-      }
+      (square) => square.dataset.color
     );
     redoStack.push(currentState);
     // redo stack is not empty
@@ -340,11 +336,7 @@ const redo = () => {
   if (redoStack.length > 0) {
     // save current state to be put in the undo stack
     const currentState = Array.from(document.querySelectorAll(".square")).map(
-      (square) => {
-        if (square.dataset.color === "transparent")
-          return square.dataset.transparentColor;
-        else return square.dataset.color;
-      }
+      (square) => square.dataset.color
     );
     undoStack.push(currentState);
 
@@ -372,11 +364,7 @@ const redo = () => {
 const captureState = () => {
   // allow for an undo as a new action was made
   const currentState = Array.from(document.querySelectorAll(".square")).map(
-    (square) => {
-      if (square.dataset.color === "transparent")
-        return square.dataset.transparentColor;
-      else return square.dataset.color;
-    }
+    (square) => square.dataset.color
   );
   undoStack.push(currentState);
 
@@ -398,7 +386,9 @@ const captureState = () => {
 const applyState = (state) => {
   document.querySelectorAll(".square").forEach((square, index) => {
     square.dataset.color = state[index];
-    square.style.backgroundColor = state[index];
+    if (state[index] === "transparent") {
+      square.style.backgroundColor = square.dataset.transparentColor;
+    } else square.style.backgroundColor = state[index];
   });
 };
 
